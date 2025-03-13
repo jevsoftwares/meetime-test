@@ -1,7 +1,11 @@
 package com.jaysonmm.meetime_test.controller.v1;
 
+import com.jaysonmm.meetime_test.service.HubSpotAuthService;
+import io.swagger.v3.oas.annotations.ExternalDocumentation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,27 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v1/auth")
+@RequiredArgsConstructor
 public class HubSpotAuthController {
     
-    @Value("${hubspot.client-id}")
-    private String clientId;
+    private final HubSpotAuthService hubSpotAuthService;
 
-    @Value("${hubspot.redirect-uri}")
-    private String redirectUri;
-
-    @Value("${hubspot.auth-uri}")
-    private String authUri;
-
-    private static final String SCOPES = "crm.objects.contacts.read";
-
+    @Operation(summary = "Realizar login na plataforma HubSpot",
+            description = "Direciona para a plataforma HubSpot para login",
+            externalDocs = @ExternalDocumentation(
+                    description = "Essa url deve ser acessada somente pelo navegador para retorno do callback",
+                    url = "https://localhost:8999/hubspot/v1/auth/login"))
+    @ApiResponse(responseCode = "200")
     @GetMapping("/login")
     public ResponseEntity<Void> loginHubSpot(HttpServletResponse response) throws IOException {
-        String authUrl = authUri + "?client_id=" + clientId +
-                "&redirect_uri=" + redirectUri +
-                "&scope=" + SCOPES +
-                "&response_type=code";
-        response.sendRedirect(authUrl);
+        hubSpotAuthService.loginHubSpot(response);
         return ResponseEntity.ok().build();
     }
 }

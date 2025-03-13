@@ -1,37 +1,35 @@
 package com.jaysonmm.meetime_test.controller.v1;
 
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
+import com.jaysonmm.meetime_test.service.HubSpotService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
-@RequestMapping("/hubspot")
+@RequestMapping("/v1")
+@RequiredArgsConstructor
+@OpenAPIDefinition(info = @Info(title = "HubSpot Integration",
+        description = "Serviço responsável pela integração com HubSpot"))
 public class HubSpotController {
 
-    private final WebClient webClient;
+    private final HubSpotService hubSpotService;
 
-    public HubSpotController(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.build();
-    }
-
-    private static final String API_URL = "https://api.hubapi.com/crm/v3/objects/contacts";
-
+    @Operation(summary = "Listar contatos do HubSpot",
+            description = "Busca contatos do HubSpot e retorna por json" )
+    @ApiResponse(responseCode = "200")
+    @ResponseBody
     @GetMapping("/contacts")
     public ResponseEntity<?> getContacts(@RequestHeader("Authorization") String authorization) {
-        Map<String, Object> response = webClient.get()
-                .uri(API_URL)
-                .header(HttpHeaders.AUTHORIZATION, authorization)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
-                .block();
+
+        Map<String, Object> response = hubSpotService.getStringObjectMap(authorization);
 
         return ResponseEntity.ok(response);
     }
+
 }
