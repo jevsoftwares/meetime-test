@@ -5,6 +5,7 @@ import com.jaysonmm.meetime_test.service.HubSpotAuthService;
 import com.jaysonmm.meetime_test.utlis.Constants;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class HubSpotAuthController {
                     url = "http://localhost:8999/hubspot/v1/auth/login"))
     @ApiResponse(responseCode = "200")
     @GetMapping("/login")
-    public ResponseEntity<Void> loginHubSpot(@RequestParam(Constants.API_KEY_HEADER) String xApiKey, HttpServletResponse response) throws IOException {
+    public ResponseEntity<Void> loginHubSpot(@Parameter(hidden = true) @RequestParam(Constants.API_KEY_HEADER) String xApiKey, HttpServletResponse response) throws IOException {
         if (Objects.isNull(xApiKey) || !Objects.equals(xApiKey, xApiKeyServer)){
             throw new CustomUnauthorizedException("Não autorizado");
         }

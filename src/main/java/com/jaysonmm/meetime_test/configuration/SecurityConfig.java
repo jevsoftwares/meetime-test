@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -52,10 +51,9 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
                         .requestMatchers("/swagger-ui/**","/v3/api-docs/**","/v3/api-docs").permitAll()
                         .requestMatchers(
-                                "/**"
+                                "/v1/**"
                         ).permitAll()
                         .anyRequest().authenticated())
-                .addFilterBefore(new ApikeyFilter(environment), AuthorizationFilter.class)
                 .build();
     }
 }
