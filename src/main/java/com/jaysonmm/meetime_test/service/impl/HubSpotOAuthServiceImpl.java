@@ -1,23 +1,20 @@
 package com.jaysonmm.meetime_test.service.impl;
 
+import com.jaysonmm.meetime_test.controller.exception.exception.CustomNotFoundException;
 import com.jaysonmm.meetime_test.controller.response.HubSpotOAuthResponse;
 import com.jaysonmm.meetime_test.service.HubSpotOAuthService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.nio.file.AccessDeniedException;
 import java.util.Map;
 
 @Service
@@ -39,7 +36,6 @@ public class HubSpotOAuthServiceImpl implements HubSpotOAuthService {
 
     private final WebClient webClient = WebClient.builder().build();
 
-    @SneakyThrows
     @Override
     public HubSpotOAuthResponse callback(String code) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
@@ -51,6 +47,8 @@ public class HubSpotOAuthServiceImpl implements HubSpotOAuthService {
 
         Map<String, Object> response = webClient.post()
                 .uri(tokenUri)
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.USER_AGENT, "Spring Boot OAuth Client")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
@@ -59,9 +57,9 @@ public class HubSpotOAuthServiceImpl implements HubSpotOAuthService {
 
         if (response != null && response.containsKey("access_token")) {
             String accessToken = (String) response.get("access_token");
-            return HubSpotOAuthResponse.builder().token(accessToken).build();
+            return new HubSpotOAuthResponse(accessToken);
         } else {
-            throw new AccessDeniedException("Acesso não autorizado");
+            throw new CustomNotFoundException("Acesso não autorizado");
         }
     }
 }

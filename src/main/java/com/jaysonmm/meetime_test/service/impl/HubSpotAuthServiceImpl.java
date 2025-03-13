@@ -24,7 +24,7 @@ public class HubSpotAuthServiceImpl implements HubSpotAuthService {
     @Value("${hubspot.auth-uri}")
     private String authUri;
 
-    private static final String SCOPES = "crm.objects.contacts.read";
+    private static final String SCOPES = "crm.objects.contacts.read crm.objects.contacts.write crm.schemas.contacts.write";
 
 
     @Override

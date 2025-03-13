@@ -1,4 +1,4 @@
-package com.jaysonmm.meetime_test.controller.response;
+package com.jaysonmm.meetime_test.controller.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class HubSpotOAuthResponse {
-    private String token;
+public class ContactRequest {
+    private String email;
+    private String firstName;
+    private String lastName;
 }
