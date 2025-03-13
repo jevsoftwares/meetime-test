@@ -69,6 +69,15 @@ config.apikey=${CONFIG_X_API_KEY:xpto}
 
 ## 🛠 Endpoints Disponíveis
 
+O serviço expõe endpoints para autenticação, gerenciamento de contatos no HubSpot e Webhooks.
+
+### 🔔 Webhooks
+
+- **Receber evento de criação de contato:** `POST /v1/oauth/object-creation`
+   - Este endpoint recebe notificações do HubSpot sempre que um novo contato é criado.
+   - Documentado no Swagger UI.
+   - Também listado no arquivo `README.md`.
+
 O serviço expõe endpoints para autenticação e gerenciamento de contatos no HubSpot.
 
 ### 🔑 Autenticação
